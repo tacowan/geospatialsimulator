@@ -52,7 +52,6 @@ namespace simexercise
         }
 
 
-
         static async Task begin(DeviceClient deviceClient)
         {
 
