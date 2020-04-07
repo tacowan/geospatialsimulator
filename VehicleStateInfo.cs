@@ -7,7 +7,7 @@ namespace simexercise
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public decimal Speed { get; set; }
-
+        public decimal Limit { get; internal set; }
     }
 
     public class VehicleState
@@ -40,7 +40,7 @@ namespace simexercise
         internal void updateLocation(Coordinate c)
         {
             location = c;
-            if (c.Type == GeoType.fullstop) {
+            if (c.Type == GeoType.fullstop || c.Type == GeoType.begin) {
                 desiredSpeed = maxSpeed;              
             }
         }
@@ -49,21 +49,19 @@ namespace simexercise
         {
             var stopSignDistance = (decimal)location.DistanceFrom(nextStop);
             //Console.WriteLine("v={0:0.00}m/s {1:0.00} should be < {2:0.00}", Speed, getStoppingDistance(), stopSignDistance);
-            if (getStoppingDistance() >= Math.Floor(stopSignDistance))
-                desiredSpeed = 0;
-            
-            if (Speed < desiredSpeed) //accelerate
+            if (getStoppingDistance() >= Math.Floor(stopSignDistance)) {
+                //ignore all else and start slowing down
+                acceleration = -acclerationRate;            
+            } 
+            else if (Speed < desiredSpeed) //accelerate
             {
                 acceleration = acclerationRate;
             }
-            else if (Speed >= desiredSpeed && desiredSpeed > 0) // we're good
-            {
-                acceleration = 0;
-            }
-            else if (desiredSpeed == 0) //decelerate
+            else if (Speed > desiredSpeed) // declerate
             {
                 acceleration = -acclerationRate;
             }
+            
         }
     }
 

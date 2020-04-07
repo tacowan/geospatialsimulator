@@ -42,6 +42,7 @@ namespace simexercise
             if ( i == -1 )
                 i = 10;
             state.maxSpeed = i;
+            state.desiredSpeed = i;
         }
     }
 

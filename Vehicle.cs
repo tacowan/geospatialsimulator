@@ -71,7 +71,8 @@ namespace simexercise
                         {
                             Latitude = s.location.Latitude,
                             Longitude = s.location.Longitude,
-                            Speed = s.Speed
+                            Speed = s.Speed,
+                            Limit = s.maxSpeed
                         };
                         eventQueue.Enqueue(state);
                     }

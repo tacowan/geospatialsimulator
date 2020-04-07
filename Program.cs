@@ -56,7 +56,7 @@ namespace simexercise
         static async Task begin(DeviceClient deviceClient)
         {
 
-            var foo = await AtlasRoute.getRoute(33.528800, -101.898778, 32.458974, -100.386732);
+            var foo = await AtlasRoute.getRoute(32.747641, -97.324868, 32.748871, -97.3352362);
             var drivingRoute = new BlockingCollection<RouteMarker>(100);
             Task producer = new AtlasRoute(foo, drivingRoute).GenerateMetersAsync();
 
@@ -69,7 +69,7 @@ namespace simexercise
                 };
                 var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
                 var msg = new Message(Encoding.UTF8.GetBytes(messageString));
-                WriteLine(messageString);
+                WriteLine(v.Speed + " " + v.Limit);
                 await deviceClient.SendEventAsync(msg);
             }, 3);
 
