@@ -4,6 +4,8 @@ using Microsoft.Azure.Devices.Provisioning.Client.Transport;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Extensions.Configuration;
 using static simexercise.AppConfig;
+using System;
+using System.Net;
 
 namespace simexercise
 {
@@ -11,6 +13,27 @@ namespace simexercise
     public static class AppConfig {
         private static IConfigurationRoot _config;
         public static IConfigurationRoot Config { get => _config; set => _config = value; }
+        public const string Prefix = "AZSIMULATOR_";
+
+        public static void assertEnvVariable()
+        {
+
+            
+            string[] env = {"MAPSKEY","IDSCOPE","REGISTRATIONID","SASTOKEN"};
+            foreach (var v in env ) {
+                var test = AppConfig.Config[v];
+                if ( test == null ) {
+                    Console.Error.WriteLine("Error {0} is not set.", Prefix + v);
+                    Environment.Exit(1);
+                }
+            }
+            var code = AtlasRoute.test();
+            if (code.Equals(HttpStatusCode.Unauthorized))
+            {            
+                Console.Error.WriteLine("Error {0} is invalid, azure maps returned 401 unauthorized.", Prefix + AtlasRoute.AZMAPSKEY); 
+                Environment.Exit(1);
+            }
+        }
     }
 
     public class DeviceRegistrationHelper
