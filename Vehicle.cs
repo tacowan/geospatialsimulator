@@ -53,7 +53,9 @@ namespace simexercise
                     done = move(position); //location may change
                     if (done)
                         break;
-                    t += dt;
+
+                    t += dt; //increment time
+
                     // simulation runs MUCH faster than real time, 
                     // vehicle sends location udpates
                     // once per frequency*seconds

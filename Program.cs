@@ -9,6 +9,7 @@ using static System.Console;
 using static simexercise.DeviceRegistrationHelper;
 using System.IO;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics;
 
 namespace simexercise
 {
@@ -68,8 +69,9 @@ namespace simexercise
                 };
                 var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
                 var msg = new Message(Encoding.UTF8.GetBytes(messageString));
-                WriteLine(v.Speed + " " + v.Limit);
+                
                 await deviceClient.SendEventAsync(msg);
+                
             }, 3);
 
             consumer.Wait();
