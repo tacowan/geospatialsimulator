@@ -14,10 +14,8 @@ namespace simexercise
     {
         public decimal acceleration { get; set; }
         public decimal acclerationRate { get; set; }
-
         public decimal Speed { get; set; }
         public decimal maxSpeed { get; internal set; }
-
         public Coordinate location { get; set; }
 
         public decimal getStoppingDistance()
@@ -59,7 +57,4 @@ namespace simexercise
             
         }
     }
-
-
-
 }

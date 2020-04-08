@@ -12,7 +12,6 @@ namespace simexercise
         private Coordinate nextStop = new Coordinate();
         Queue<IoTState> eventQueue;
         BlockingCollection<RouteMarker> route;
-
         decimal stoppedUntil = 0.0M;
    
 
@@ -29,7 +28,6 @@ namespace simexercise
             eventQueue = new Queue<IoTState>();
             route = r;
         }
-
 
         public async Task StartTrip(Action<IoTState> a, int frequency = 2)
         {
@@ -52,11 +50,9 @@ namespace simexercise
                         stoppedUntil -= dt;
                     }
                     position += s.Speed * dt;
-
                     done = move(position); //location may change
                     if (done)
                         break;
-
                     t += dt;
                     // simulation runs MUCH faster than real time, 
                     // vehicle sends location udpates
@@ -81,7 +77,7 @@ namespace simexercise
                 eventQueue.Enqueue(
                     new IoTState() { Latitude = -1 }
                 );
-                Console.WriteLine("Simulation complete in {0}", TimeSpan.FromSeconds(Decimal.ToDouble(t)));
+                Console.WriteLine("Virtual simulation completed, duration: {0}", TimeSpan.FromSeconds(Decimal.ToDouble(t)));
             });
 
             await Task.Run(async () =>
@@ -95,7 +91,7 @@ namespace simexercise
                         break;
                     a.Invoke(eventQueue.Dequeue());
                 }
-                Console.WriteLine("realtime simulation complete");
+                Console.WriteLine("Realtime simulation complete");
             });
 
         }

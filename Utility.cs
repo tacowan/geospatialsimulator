@@ -10,7 +10,6 @@ namespace simexercise
 
     public static class AppConfig {
         private static IConfigurationRoot _config;
-
         public static IConfigurationRoot Config { get => _config; set => _config = value; }
     }
 
@@ -29,7 +28,7 @@ namespace simexercise
             {
                 var pClient = ProvisioningDeviceClient.Create(provisioningHost, idScope, security, transport);
                 DeviceRegistrationResult result = pClient.RegisterAsync().GetAwaiter().GetResult();
-                var s = "HostName=" + result.AssignedHub + ";DeviceId=" + result.DeviceId + ";SharedAccessKey=" + security.GetPrimaryKey();
+                var s = $"HostName={result.AssignedHub};DeviceId={result.DeviceId};SharedAccessKey={security.GetPrimaryKey()}"; // result.AssignedHub , result.DeviceId, security.GetPrimaryKey();
                 return DeviceClient.CreateFromConnectionString(s, TransportType.Mqtt);
             }
             
