@@ -8,25 +8,24 @@ namespace simexercise
 {
     class Vehicle
     {
-  
+
         private Coordinate nextStop = new Coordinate();
         Queue<IoTState> eventQueue;
         BlockingCollection<RouteMarker> route;
         decimal stoppedUntil = 0.0M;
-   
+        VehicleState s;
 
-        VehicleState s = new VehicleState()
-        {
-            maxSpeed = 10,
-            acclerationRate = 2,
-            acceleration = 0,
-            Speed = 0
-        };
-
-        public Vehicle(BlockingCollection<RouteMarker> r)
+        public Vehicle(BlockingCollection<RouteMarker> r, double defaultSpeedMps)
         {
             eventQueue = new Queue<IoTState>();
             route = r;
+            new VehicleState()
+            {
+                maxSpeed = (decimal)defaultSpeedMps,
+                acclerationRate = 2,
+                acceleration = 0,
+                Speed = 0
+            };
         }
 
         public async Task StartTrip(Action<IoTState> a, int frequency = 2)
@@ -36,7 +35,7 @@ namespace simexercise
             decimal dt = .1M; // step increment in seconds
             decimal position = 0; // position along route in meters
             bool done = false; // signal end of simulation
-           
+
             Task task2 = Task.Run(async () =>
             {
                 s.location = (Coordinate)route.Take();
@@ -45,7 +44,8 @@ namespace simexercise
                 {
                     s.updateSpeed(dt);
                     // if we are stopped force speed to zero 
-                    if (stoppedUntil >= 0 ) {
+                    if (stoppedUntil >= 0)
+                    {
                         s.Speed = 0;
                         stoppedUntil -= dt;
                     }
@@ -99,18 +99,19 @@ namespace simexercise
         }
 
         private bool move(decimal position)
-        { 
-            while (s.location.TripMeters <=  position)
+        {
+            while (s.location.TripMeters <= position)
             {
-                var c=route.Take();
+                var c = route.Take();
                 c.updateSimulationState(s);
                 if (c.isEnd())
                     return true;
-                else if (c.Type == GeoType.fullstop) {
+                else if (c.Type == GeoType.fullstop)
+                {
                     nextStop = (Coordinate)c;
                     //keep speed at zero for (n) seconds.  
-                    stoppedUntil = 10;       
-                }      
+                    stoppedUntil = 10;
+                }
             }
             return false;
         }
