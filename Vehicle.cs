@@ -18,7 +18,6 @@ namespace simexercise
 
         VehicleState s = new VehicleState()
         {
-            desiredSpeed = 10,
             maxSpeed = 10,
             acclerationRate = 2,
             acceleration = 0,

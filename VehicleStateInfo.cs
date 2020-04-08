@@ -14,8 +14,6 @@ namespace simexercise
     {
         public decimal acceleration { get; set; }
         public decimal acclerationRate { get; set; }
-        //public decimal stoppingDistance { get; set; }
-        public decimal desiredSpeed { get; set; }
 
         public decimal Speed { get; set; }
         public decimal maxSpeed { get; internal set; }
@@ -40,9 +38,6 @@ namespace simexercise
         internal void updateLocation(Coordinate c)
         {
             location = c;
-            if (c.Type == GeoType.fullstop || c.Type == GeoType.begin) {
-                desiredSpeed = maxSpeed;              
-            }
         }
 
         internal void adjustSpeed(Coordinate nextStop)
@@ -53,11 +48,11 @@ namespace simexercise
                 //ignore all else and start slowing down
                 acceleration = -acclerationRate;            
             } 
-            else if (Speed < desiredSpeed) //accelerate
+            else if (Speed < maxSpeed) //accelerate
             {
                 acceleration = acclerationRate;
             }
-            else if (Speed > desiredSpeed) // declerate
+            else if (Speed > maxSpeed) // declerate
             {
                 acceleration = -acclerationRate;
             }
