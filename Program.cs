@@ -60,7 +60,7 @@ namespace simexercise
                 var msg = new Message(Encoding.UTF8.GetBytes(messageString));
                 System.Console.WriteLine(messageString);
                 await deviceClient.SendEventAsync(msg);               
-            }, 4);
+            }, 5);
 
             consumer.Wait();
         }
