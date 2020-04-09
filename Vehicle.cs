@@ -87,7 +87,7 @@ namespace simexercise
                 while (true)
                 {
                     //await Task.Delay(frequency * 1000);
-                    await Task.Delay(frequency * 100);
+                    await Task.Delay(frequency * 1000);
                     if (eventQueue.Count < 1)
                         continue;
                     if (eventQueue.Peek().Latitude < 0)
