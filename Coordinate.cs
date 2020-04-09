@@ -39,9 +39,11 @@ namespace simexercise
         public void updateSimulationState(VehicleState state)
         {
             int i = AtlasRoute.getSpeed(Latitude,Longitude).GetAwaiter().GetResult();
+            //convert kph to meters per second
             if ( i == -1 )
                 i = 10;
-            state.maxSpeed = i;
+            var result = i*0.27777778;
+            state.maxSpeed = (decimal)result;
         }
     }
 
@@ -161,7 +163,8 @@ namespace simexercise
 
         public void updateSimulationState(VehicleState s)
         {
-            s.updateLocation(this);
+            if (Type  != GeoType.fullstop)
+                s.updateLocation(this);
         }
 
         public override int GetHashCode()

@@ -77,7 +77,8 @@ namespace simexercise
         private Coordinate[] Slice(LineSegment line)
         {
             int parts = (int)Math.Round(line.Length());
-
+            if (parts ==0)
+                return new Coordinate[0];
             Coordinate to = line.end;
             Coordinate from = line.begin;
             double latdiff = to.Latitude - from.Latitude;

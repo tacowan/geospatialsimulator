@@ -15,13 +15,13 @@ namespace simexercise
         decimal stoppedUntil = 0.0M;
         VehicleState s;
 
-        public Vehicle(BlockingCollection<RouteMarker> r, double defaultSpeedMps)
+        public Vehicle(BlockingCollection<RouteMarker> r)
         {
             eventQueue = new Queue<IoTState>();
             route = r;
-            new VehicleState()
+            s = new VehicleState()
             {
-                maxSpeed = (decimal)defaultSpeedMps,
+                maxSpeed = 10,
                 acclerationRate = 2,
                 acceleration = 0,
                 Speed = 0
@@ -86,7 +86,8 @@ namespace simexercise
             {
                 while (true)
                 {
-                    await Task.Delay(frequency * 1000);
+                    //await Task.Delay(frequency * 1000);
+                    await Task.Delay(frequency * 100);
                     if (eventQueue.Count < 1)
                         continue;
                     if (eventQueue.Peek().Latitude < 0)
