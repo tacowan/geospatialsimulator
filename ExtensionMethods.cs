@@ -17,17 +17,7 @@ namespace simexercise
             return d * (Math.PI / 180);
         }
 
-        /// <summary>
-        /// Diffs the radian.
-        /// </summary>
-        /// <param name="val1">First value.</param>
-        /// <param name="val2">Second value.</param>
-        /// <returns>Double.</returns>
-        public static double DiffRadian(this double val1, double val2)
-        {
-            return val2.ToRadian() - val1.ToRadian();
-        }
-
+ 
         /// <summary>
         /// Gets the degrees.
         /// </summary>
