@@ -17,8 +17,7 @@ namespace simexercise
 
         public static void assertEnvVariable()
         {
-
-            
+           
             string[] env = {"MAPSKEY","IDSCOPE","REGISTRATIONID","SASTOKEN"};
             foreach (var v in env ) {
                 var test = AppConfig.Config[v];
@@ -54,7 +53,6 @@ namespace simexercise
                 var s = $"HostName={result.AssignedHub};DeviceId={result.DeviceId};SharedAccessKey={security.GetPrimaryKey()}"; // result.AssignedHub , result.DeviceId, security.GetPrimaryKey();
                 return DeviceClient.CreateFromConnectionString(s, TransportType.Mqtt);
             }
-            
         }
     }
 }
