@@ -14,7 +14,7 @@ namespace simexercise
     {
 
         static int Main(string[] args)
-        {    
+        {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddCommandLine(args)
@@ -25,17 +25,21 @@ namespace simexercise
             AppConfig.Config = config;
             assertEnvVariable();
 
-            var x = AppConfig.Config["from"].Split(',');
-            var lat1 = double.Parse( x[0] );
-            var lon1 = double.Parse( x[1] );
-
-            var y = AppConfig.Config["to"].Split(',');
-            var lat2 = double.Parse( y[0] );
-            var lon2 = double.Parse( y[1] );
-
+            double lat1, lon1;
+            parseCoordinate("from", out lat1, out lon1);           
+            double lat2, lon2;
+            parseCoordinate("to", out lat2, out lon2);
             var s_deviceClient = getDeviceClient();
-            begin( s_deviceClient, lat1, lon1, lat2, lon2).Wait();
+            
+            begin(s_deviceClient, lat1, lon1, lat2, lon2).Wait();
             return 0;
+        }
+
+        private static void parseCoordinate(string var, out double lat1, out double lon1)
+        {
+            var x = AppConfig.Config[var].Split(',');
+            lat1 = double.Parse(x[0]);
+            lon1 = double.Parse(x[1]);
         }
 
         static async Task begin(DeviceClient deviceClient, double lat1, double lon1, double lat2, double lon2)
