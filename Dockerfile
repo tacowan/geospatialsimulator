@@ -1,12 +1,17 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
 WORKDIR /app
 
+COPY base base/
+WORKDIR /base
+RUN dotnet build
+
 # Copy csproj and restore as distinct layers
-COPY *.csproj ./
+WORKDIR /app
+COPY app/*.csproj ./
 RUN dotnet restore
 
 # Copy everything else and build
-COPY . ./
+COPY app ./
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
