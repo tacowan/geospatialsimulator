@@ -5,10 +5,10 @@
     <PackageId>Simulator.ExampleLibrary</PackageId>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Version>1.0.1</Version>
-    <Authors>Paul Hiles</Authors>
+    <Authors>Taylor Cowan</Authors>
     <Company>DevTrends</Company>
     <Product>DevTrends.ExampleLibrary</Product>
-    <Description>An example library that does very little</Description>
+    <Description>An example library that simulates stuff</Description>
   </PropertyGroup>
 
 <ItemGroup>
