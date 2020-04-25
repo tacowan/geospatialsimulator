@@ -1,8 +1,10 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
-WORKDIR /app
-
-COPY base base/
 WORKDIR /base
+
+COPY base/*.csproj ./
+RUN dotnet restore
+
+COPY base ./
 RUN dotnet build
 
 # Copy csproj and restore as distinct layers
