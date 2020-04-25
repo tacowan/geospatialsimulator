@@ -1,13 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RestoreSources>$(RestoreSources);../base/bin/Debug;https://api.nuget.org/v3/index.json</RestoreSources>
+    <PackageId>Simulator.ExampleLibrary</PackageId>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>1.0.1</Version>
+    <Authors>Paul Hiles</Authors>
+    <Company>DevTrends</Company>
+    <Product>DevTrends.ExampleLibrary</Product>
+    <Description>An example library that does very little</Description>
   </PropertyGroup>
 
-  <ItemGroup>
-     <PackageReference Include="Microsoft.Azure.Devices.Client" Version="1.24.0" />
+<ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Devices.Client" Version="1.24.0" />
      <PackageReference Include="Microsoft.Azure.Devices.Provisioning.Transport.Amqp" Version="1.2.2" />
      <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.3" />
      <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.3" />
@@ -16,7 +21,6 @@
      <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.3" />
      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.3" />
      <PackageReference Include="Newtonsoft.json" Version="12.0.3" />
-     <PackageReference Include="Simulator.ExampleLibrary" Version="1.0.1" />
-  </ItemGroup>
+</ItemGroup>
 
 </Project>

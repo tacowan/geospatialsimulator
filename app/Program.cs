@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
-using System.Collections.Concurrent;
 using static simexercise.DeviceRegistrationHelper;
 using static simexercise.AppConfig;
 using System.IO;
@@ -10,8 +9,10 @@ using Microsoft.Extensions.Configuration;
 
 namespace simexercise
 {
+
     class Program
     {
+        IConfiguration config;
 
         static int Main(string[] args)
         {
@@ -21,8 +22,7 @@ namespace simexercise
                 .AddEnvironmentVariables(prefix: Prefix);
 
 
-            var config = builder.Build();
-            AppConfig.Config = config;
+            Config = builder.Build();
             assertEnvVariable();
 
             double lat1, lon1;
@@ -30,8 +30,8 @@ namespace simexercise
             double lat2, lon2;
             parseCoordinate("to", out lat2, out lon2);
             var s_deviceClient = getDeviceClient();
-            
-            begin(s_deviceClient, lat1, lon1, lat2, lon2).Wait();
+            Program p = new Program(Config);
+            p.begin(s_deviceClient, lat1, lon1, lat2, lon2).Wait();
             return 0;
         }
 
@@ -42,18 +42,21 @@ namespace simexercise
             lon1 = double.Parse(x[1]);
         }
 
-        static async Task begin(DeviceClient deviceClient, double lat1, double lon1, double lat2, double lon2)
+        Program(IConfiguration configuration) {
+            config = configuration;
+        }
+
+        async Task begin(DeviceClient deviceClient, double lat1, double lon1, double lat2, double lon2)
         {
             
-            // REST call to get azure maps route data
-            var json = await AtlasRoute.getRoute(lat1, lon1, lat2, lon2);
-            var drivingRoute = new BlockingCollection<RouteMarker>(100);
+            var producer = new AtlasRoute(config);
+            var json = await producer.getRoute(lat1, lon1, lat2, lon2);
+            producer.Parse(json);
 
-            // begin reading route line segments, could take a long time
-            // so we will do this in parallel with the simulation.
-            Task producer = new AtlasRoute(json, drivingRoute).GenerateMetersAsync();
-
-            Task consumer = new Vehicle(drivingRoute).StartTrip(async (IoTState v) =>
+            Task t1 = producer.GenerateMetersAsync();
+            var v = new Vehicle(producer);
+            
+            Task t2 = v.StartTrip(async (IoTState v) =>
             {
                 var telemetryDataPoint = new
                 {
@@ -66,7 +69,7 @@ namespace simexercise
                 await deviceClient.SendEventAsync(msg);               
             }, 5);
 
-            consumer.Wait();
+            t2.Wait();
         }
     }
 }

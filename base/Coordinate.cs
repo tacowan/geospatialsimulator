@@ -9,7 +9,7 @@ namespace simexercise
         public GeoType Type { get; }
 
         public long TripMeters {get; set;}
-        public void updateSimulationState(VehicleState state);
+        public void updateSimulationState(Vehicle state);
 
         public bool isEnd();
     }
@@ -36,14 +36,9 @@ namespace simexercise
             return false;
         }
 
-        public void updateSimulationState(VehicleState state)
+        public void updateSimulationState(Vehicle v)
         {
-            int i = AtlasRoute.getSpeed(Latitude,Longitude).GetAwaiter().GetResult();
-            //convert kph to meters per second
-            if ( i == -1 )
-                i = 10;
-            var result = i*0.27777778;
-            state.maxSpeed = (decimal)result;
+            v.updateSimulation(this);
         }
     }
 
@@ -161,10 +156,9 @@ namespace simexercise
             return Math.Atan2(destinationRadian, destinationPhi).ToBearing();
         }
 
-        public void updateSimulationState(VehicleState s)
+        public void updateSimulationState(Vehicle v)
         {
-            if (Type  != GeoType.fullstop)
-                s.updateLocation(this);
+                v.updateSimulation(this);
         }
 
         public override int GetHashCode()

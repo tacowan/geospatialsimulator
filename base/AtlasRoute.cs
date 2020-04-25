@@ -6,21 +6,22 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.Extensions.Configuration;
 using static System.Environment;
-using static simexercise.AppConfig;
 
 namespace simexercise
 {
-    class AtlasRoute : BaseRoute
+    public class AtlasRoute : BaseRoute
     {
  
         public const string AZMAPSKEY = "MAPSKEY";
-        public AtlasRoute(string json, BlockingCollection<RouteMarker> r) : base(r)
+        private IConfiguration configuration;
+        public AtlasRoute(IConfiguration conf) : base(new BlockingCollection<RouteMarker>(100))
         {           
-            Parse(json);
+             configuration = conf;
         }
 
-        private void Parse(string json)
+        public void Parse(string json)
         { 
             dynamic rss = JObject.Parse(json);           
             var itineraryItems = rss["routes"][0]["legs"][0]["points"];
@@ -37,7 +38,7 @@ namespace simexercise
             items = list.ToArray();
         }
 
-        public static HttpStatusCode  test() {
+        public  HttpStatusCode  test() {
             string URL = "https://atlas.microsoft.com/timezone/ianaVersion/json";
             HttpClient client = new HttpClient
             {
@@ -45,12 +46,12 @@ namespace simexercise
             };
             var query = HttpUtility.ParseQueryString(string.Empty);
             query["api-version"] = "1.0";   
-            query["subscription-key"] = Config[AZMAPSKEY];
+            query["subscription-key"] = configuration[AZMAPSKEY];
             return client.GetAsync("?" + query).GetAwaiter().GetResult().StatusCode;          
  
         }
 
-        public static async Task<string> getRoute(double lat, double lon, double lat2, double lon2) {
+        public  async Task<string> getRoute(double lat, double lon, double lat2, double lon2) {
             string URL = "https://atlas.microsoft.com/route/directions/json";
             ;
             HttpClient client = new HttpClient
@@ -59,13 +60,13 @@ namespace simexercise
             };
             var query = HttpUtility.ParseQueryString(string.Empty);
             query["api-version"] = "1.0";   
-            query["subscription-key"] = Config[AZMAPSKEY];
+            query["subscription-key"] = configuration[AZMAPSKEY];
             query["query"] = $"{lat},{lon}:{lat2},{lon2}";
             string queryString = query.ToString();      
             return await client.GetStringAsync("?" + queryString);            
         }
 
-        public static async Task<int> getSpeed(double lat, double lon) {
+        public  async Task<int> getSpeed(double lat, double lon) {
             
             var URL = "https://atlas.microsoft.com/traffic/flow/segment/json";
             HttpClient client = new HttpClient
@@ -74,7 +75,8 @@ namespace simexercise
             };
             var query = HttpUtility.ParseQueryString(string.Empty);
             query["api-version"] = "1.0";
-            query["subscription-key"] = Config[AZMAPSKEY];
+
+            query["subscription-key"] = configuration[AZMAPSKEY];
             query["query"] = $"{lat},{lon}";
             query["zoom"] = "21";
             query["style"] = "relative";

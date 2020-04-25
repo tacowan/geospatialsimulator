@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace simexercise
 {
-    internal class BaseRoute
+    public  class BaseRoute
     {
         protected Coordinate[] items;
         protected LineSegment[] segments;
@@ -16,6 +16,10 @@ namespace simexercise
         public BaseRoute(BlockingCollection<RouteMarker> r) {
             Breadcrumbs = r;
             tripmeters = 0;
+        }
+
+        public RouteMarker Take() {
+            return Breadcrumbs.Take();
         }
 
         public async Task GenerateMetersAsync() {

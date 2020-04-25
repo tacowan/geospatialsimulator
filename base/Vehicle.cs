@@ -6,19 +6,21 @@ using System.Threading.Tasks;
 
 namespace simexercise
 {
-    class Vehicle
+    public class Vehicle
     {
 
         private Coordinate nextStop = new Coordinate();
         Queue<IoTState> eventQueue;
-        BlockingCollection<RouteMarker> route;
+        //BlockingCollection<RouteMarker> route;
         decimal stoppedUntil = 0.0M;
         VehicleState s;
+        AtlasRoute _route;
 
-        public Vehicle(BlockingCollection<RouteMarker> r)
+        public Vehicle(AtlasRoute route)
         {
+            _route = route;
             eventQueue = new Queue<IoTState>();
-            route = r;
+            
             s = new VehicleState()
             {
                 maxSpeed = 10,
@@ -38,7 +40,7 @@ namespace simexercise
 
             Task task2 = Task.Run(async () =>
             {
-                s.location = (Coordinate)route.Take();
+                s.location = (Coordinate)_route.Take();
                 Debug.Assert(s.location.Type == GeoType.begin);
                 while (!done)
                 {
@@ -99,12 +101,28 @@ namespace simexercise
 
         }
 
+        public void updateSimulation(LineSegmentStart coord)
+        {
+            int i = _route.getSpeed(coord.Latitude,coord.Longitude).GetAwaiter().GetResult();
+            //convert kph to meters per second
+            if ( i == -1 )
+                i = 10;
+            var result = i*0.27777778;
+            s.maxSpeed = (decimal)result;
+        }
+
+        internal void updateSimulation(Coordinate coordinate)
+        {
+            if (coordinate.Type  != GeoType.fullstop)
+                s.updateLocation(coordinate);
+        }
+        
         private bool move(decimal position)
         {
             while (s.location.TripMeters <= position)
             {
-                var c = route.Take();
-                c.updateSimulationState(s);
+                var c = _route.Take();
+                c.updateSimulationState(this);
                 if (c.isEnd())
                     return true;
                 else if (c.Type == GeoType.fullstop)
@@ -116,5 +134,7 @@ namespace simexercise
             }
             return false;
         }
+
+
     }
 }

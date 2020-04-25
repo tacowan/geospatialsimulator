@@ -2,7 +2,7 @@ using System;
 
 namespace simexercise
 {
-    struct IoTState
+    public struct IoTState
     {
         public double Latitude { get; set; }
         public double Longitude { get; set; }
