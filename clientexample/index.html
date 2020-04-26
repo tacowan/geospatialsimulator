@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- Ensures that IE and Edge uses the latest version and doesn't emulate an older version -->
+    <meta http-equiv="x-ua-compatible" content="IE=Edge">
+    <!-- Ensures the web page looks good on all screen sizes. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css" type="text/css">
+    <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.js"></script>
+    <!-- Load in the JavaScript that has our custom module. -->
+
+    <script src="AnimationModule.js"></script>
+
+
+    <style>
+        html,
+        body {
+            margin: 0;
+        }
+
+        #myMap {
+            height: 100vh;
+            width: 100vw;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="myMap"></div>
+    <script type="text/javascript">
+        var map = new atlas.Map('myMap', {
+            center: [-97.348219, 32.990904],
+            zoom: 6,
+            language: 'en-US',
+            authOptions: {
+                authType: 'subscriptionKey',
+                subscriptionKey: '{changeme}'
+            }
+        });
+        map.controls.add([
+            new atlas.control.ZoomControl(),
+            new atlas.control.CompassControl(),
+            new atlas.control.PitchControl(),
+            new atlas.control.StyleControl()
+        ], {
+            position: "top-right"
+        });
+        var popupTemplate = '<div class="customInfobox"><div class="deviceid">{deviceid}</div>{speed}</div>';
+        var datasource = new atlas.source.DataSource();
+        //Create a layer to render point data.
+        var symbolLayer = new atlas.layer.SymbolLayer(datasource, null, {
+            iconOptions: {
+                //For smoother animation, ignore the placement of the icon. This skips the label collision calculations and allows the icon to overlap map labels. 
+                ignorePlacement: true,
+                //For smoother animation, allow symbol to overlap all other symbols on the map.
+                allowOverlap: true
+            }
+        });
+        //Create a popup but leave it closed so we can update it and display it later.
+        popup = new atlas.Popup({
+            pixelOffset: [0, -18],
+            closeButton: false
+        });
+
+        var vehicles = [];
+        map.events.add('ready', function () {
+            map.sources.add(datasource);
+            map.layers.add(symbolLayer);
+        });
+
+        //Add a hover event to the symbol layer.
+        map.events.add('mouseover', symbolLayer, function (e) {
+            //Make sure that the point exists.
+            if (e.shapes && e.shapes.length > 0) {
+                var content, coordinate;
+                var properties = e.shapes[0].getProperties();
+                content = popupTemplate.replace(/{deviceid}/g, properties.deviceid).replace(/{speed}/g, properties.speed);
+                coordinate = e.shapes[0].getCoordinates();
+
+                popup.setOptions({
+                    //Update the content of the popup.
+                    content: content,
+                    //Update the popup's position with the symbol's coordinate.
+                    position: coordinate
+                });
+                //Open the popup.
+                popup.open(map);
+            }
+        });
+
+        map.events.add('mouseleave', symbolLayer, function () {
+            popup.close();
+        });
+
+    </script>
+    <!--Reference the SignalR library. -->
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@aspnet/signalr@1.1.0/dist/browser/signalr.min.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            function bindConnectionMessage(connection) {
+                var messageCallback = function (name, msg) {
+                    if (!msg) return;
+                    var response = JSON.parse(msg);
+                    var telemetry = { deviceid: name, speed: response.Speed + "km/h" };
+
+                    var pin = vehicles[name];
+                    if (pin == undefined) {
+                        var point = new atlas.data.Point([response.Location.lon, response.Location.lat]);
+                        var feature = new atlas.data.Feature(point, telemetry);
+                        var shape = new atlas.Shape(feature);
+                        datasource.add(shape);
+                        vehicles[name] = shape;
+                    } else {
+                        pin.addProperty('speed', telemetry.speed);
+                        position = [response.Location.lon, response.Location.lat];
+                        atlas.animations.setCoordinates(pin, position, { duration: 4900, easing: 'linear', autoPlay: true });
+                    }
+                };
+
+                // Create a function that the hub can call to broadcast messages.
+                connection.on('broadcastMessage', messageCallback);
+                connection.onclose(onConnectionError);
+            }
+
+            function onConnected(connection) {
+                console.log('connection started');
+            }
+
+            function onConnectionError(error) {
+                if (error && error.message) {
+                    console.error(error.message);
+                }
+            }
+
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl('https://{changeme}/api/')
+                .build();
+            bindConnectionMessage(connection);
+            connection.start()
+                .then(function () {
+                    onConnected(connection);
+                })
+                .catch(function (error) {
+                    console.error(error.message);
+                });
+        });
+    </script>
+</body>
+
+</html>
