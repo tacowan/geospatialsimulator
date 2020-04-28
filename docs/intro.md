@@ -1,6 +1,6 @@
 This tutorial will walk you through the creation 
 
-![Azure architecture](./media/simulatorarch.svg){: width=50}
+![Azure architecture](./media/simulatorarch.svg)
 
 ### Sign in to Azure
 
@@ -58,7 +58,6 @@ Our simulated device will send Location and Speed information.
       --sku Standard_S1 \
       --unit-count 1 \
       --service-mode Serverless
-    
     ```
 
 1. Get your signalR connection string.  You'll find this in the portal as well.  From the shell...
@@ -66,5 +65,32 @@ Our simulated device will send Location and Speed information.
     ```bash
     $ az signalr key list --name mysignalrservice \
       --resource-group mysimulation --query primaryConnectionString -o tsv
-    
     ```
+
+1. Create an Even Hub for exporting events from IoT Central.
+
+    ```bash
+    $ az eventhubs namespace create \
+    --name eventhub 
+    --resource-group mysimulation -l westus2
+
+    $ az eventhubs eventhub create --name fleetevents \
+    --resource-group mysimulation --namespace-name eventhub
+    ```
+
+1. Connect your newly created Event Hub to your IoT Central application
+
+    ![connect event hub to IoT Central](media/connect2ehub.gif)
+
+### Connect the dots
+
+1. Build and upload [the function app](../function).  Visual Studio code is one way to do this.  You will also need to set two app settings.
+    1. `AzureSignalRConnectionString` found in your signalr resource.
+    1. `EventHubConnectionAppSetting` found in your even hub resource.
+
+1.  Update [index.html](../clientexample/index.html) signalr connection endpoint to point to your azure function.
+
+1. Update the CORS rules in your function to allow requests from your single page app.  This is the web primary endpoint from your storage account. 
+
+    ![apply CORS policy](media/corspolicy.gif)
+
