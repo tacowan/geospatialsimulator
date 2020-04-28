@@ -25,13 +25,17 @@ namespace simexercise
             Config = builder.Build();
             assertEnvVariable();
 
-            double lat1, lon1;
-            parseCoordinate("from", out lat1, out lon1);           
-            double lat2, lon2;
-            parseCoordinate("to", out lat2, out lon2);
+            var waypoints = parseWaypoints("waypoints");
             var s_deviceClient = getDeviceClient();
             Program p = new Program(Config);
-            p.begin(s_deviceClient, lat1, lon1, lat2, lon2).Wait();
+
+            for(int i=1; i<waypoints.Length; i++) {
+                var lat1 = waypoints[i-1,0];
+                var lon1 = waypoints[i-1,1];
+                var lat2 = waypoints[i,0];
+                var lon2 = waypoints[i,1];
+                p.begin(s_deviceClient, lat1, lon1, lat2, lon2).Wait();
+            }
             return 0;
         }
 
@@ -42,20 +46,38 @@ namespace simexercise
             lon1 = double.Parse(x[1]);
         }
 
-        Program(IConfiguration configuration) {
+        private static double[,] parseWaypoints(string var)
+        {
+            var x = AppConfig.Config[var].Split(':');
+
+            var waypoints = new double[x.Length, 2];
+
+            for (int i=0; i<x.Length; i++)
+            {            
+                var y = x[i].Split(',');    
+                var lat1 = double.Parse(y[0]);
+                var lon1 = double.Parse(y[1]);
+                waypoints[i,0] = lat1;
+                waypoints[i,1] = lon1;
+            }
+            return waypoints;
+        }
+
+        Program(IConfiguration configuration)
+        {
             config = configuration;
         }
 
         async Task begin(DeviceClient deviceClient, double lat1, double lon1, double lat2, double lon2)
         {
-            
+
             var producer = new AtlasRoute(config);
             var json = await producer.getRoute(lat1, lon1, lat2, lon2);
             producer.Parse(json);
 
             Task t1 = producer.GenerateMetersAsync();
             var v = new Vehicle(producer);
-            
+
             Task t2 = v.StartTrip(async (IoTState v) =>
             {
                 var telemetryDataPoint = new
@@ -66,10 +88,12 @@ namespace simexercise
                 var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
                 var msg = new Message(Encoding.UTF8.GetBytes(messageString));
                 System.Console.WriteLine(messageString);
-                await deviceClient.SendEventAsync(msg);               
+                await deviceClient.SendEventAsync(msg);
             }, 5);
 
             t2.Wait();
         }
+
+
     }
 }
