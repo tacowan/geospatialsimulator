@@ -90,7 +90,7 @@ namespace simexercise
                 System.Console.WriteLine(messageString);
                 await deviceClient.SendEventAsync(msg);
             }, 5);
-
+            
             t2.Wait();
         }
 
