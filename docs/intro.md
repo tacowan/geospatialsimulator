@@ -1,4 +1,6 @@
-This tutorial will walk you through the creation 
+# Lab
+
+This tutorial will walk you through the creation of an end to end IoT Central device simulation to browser side real-time map.  [Also described here.](https://www.linkedin.com/pulse/real-time-iot-location-event-simulation-azure-maps-control-cowan/)
 
 ![Azure architecture](./media/simulatorarch.svg)
 
@@ -7,9 +9,13 @@ This tutorial will walk you through the creation
 Sign in to the [Azure portal](https://portal.azure.com) with your Azure account.
 
 ### Create an IoT Central Application for your simulation
+
 1. follow [these instructions to build a custom IoT Central Application](https://docs.microsoft.com/en-us/azure/iot-central/core/quick-deploy-iot-central).
-### Add a device capability model.  
+
+### Add a device capability model.
+
 Our simulated device will send Location and Speed information.
+
 1. select Device Template -> "+"
 ![](https://docs.microsoft.com/en-us/azure/iot-central/core/media/quick-create-simulated-device/device-definitions.png)
 1. Choose "IoT Device" for template type.  Do not choose IoT Edge or the plug and play models.
