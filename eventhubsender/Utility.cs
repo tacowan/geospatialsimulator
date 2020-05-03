@@ -15,7 +15,7 @@ namespace simexercise
         public static void assertEnvVariable()
         {
            
-            string[] env = {"MAPSKEY","IDSCOPE","REGISTRATIONID","SASTOKEN"};
+            string[] env = {"MAPSKEY","EVENTHUBNAME","EVENTHUBCONNSTR"};
             foreach (var v in env ) {
                 var test = Config[v];
                 if ( test == null ) {

@@ -10,18 +10,15 @@ using Azure.Messaging.EventHubs;
 
 namespace simexercise
 {
-
     class Program
     {
         IConfiguration config;
-
         static int Main(string[] args)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddCommandLine(args)
                 .AddEnvironmentVariables(prefix: Prefix);
-
 
             Config = builder.Build();
             assertEnvVariable();
@@ -87,11 +84,9 @@ namespace simexercise
                     Speed = v.Speed * 3.6M
                 };
                 var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
-            
-                System.Console.WriteLine(messageString);
                 using EventDataBatch eventBatch = await client.CreateBatchAsync();
                 var eventnew = new EventData(Encoding.UTF8.GetBytes(messageString));
-               
+                eventnew.Properties["deviceid"] = "foo";
                 eventBatch.TryAdd(eventnew);
 
             }, 5);
