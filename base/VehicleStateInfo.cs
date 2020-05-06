@@ -8,6 +8,14 @@ namespace simexercise
         public double Longitude { get; set; }
         public decimal Speed { get; set; }
         public decimal Limit { get; internal set; }
+
+        public IoTState(VehicleState s)
+        {
+            Latitude = s.location.Latitude;
+            Longitude = s.location.Longitude;
+            Speed = s.Speed;
+            Limit = s.maxSpeed;
+        }
     }
 
     public class VehicleState
@@ -26,7 +34,7 @@ namespace simexercise
         internal void updateSpeed(decimal dt)
         {
             Speed += (acceleration * dt);
-            
+
             if (Speed < 0)
             {
                 Speed = .2M;
@@ -42,10 +50,11 @@ namespace simexercise
         {
             var stopSignDistance = (decimal)location.DistanceFrom(nextStop);
             //Console.WriteLine("v={0:0.00}m/s {1:0.00} should be < {2:0.00}", Speed, getStoppingDistance(), stopSignDistance);
-            if (getStoppingDistance() >= Math.Floor(stopSignDistance)) {
+            if (getStoppingDistance() >= Math.Floor(stopSignDistance))
+            {
                 //ignore all else and start slowing down
-                acceleration = -acclerationRate;            
-            } 
+                acceleration = -acclerationRate;
+            }
             else if (Speed < maxSpeed) //accelerate
             {
                 acceleration = acclerationRate;
@@ -54,7 +63,7 @@ namespace simexercise
             {
                 acceleration = -acclerationRate;
             }
-            
+
         }
     }
 }

@@ -65,15 +65,8 @@ namespace simexercise
                     {
                         // try and stay within a minute ahead of real time
                         if (eventQueue.Count > 100)
-                            await Task.Delay(1000);
-                        var state = new IoTState()
-                        {
-                            Latitude = s.location.Latitude,
-                            Longitude = s.location.Longitude,
-                            Speed = s.Speed,
-                            Limit = s.maxSpeed
-                        };
-                        eventQueue.Enqueue(state);
+                            await Task.Delay(1000);                     
+                        eventQueue.Enqueue(new IoTState(s));
                     }
                     s.adjustSpeed(nextStop);
                 }
