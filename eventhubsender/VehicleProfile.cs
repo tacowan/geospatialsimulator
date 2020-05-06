@@ -1,7 +1,7 @@
 namespace simexercise
 {
     class VehicleProfile {
-        public string 
+        public string travelMode {get; set;}
 
     }
 

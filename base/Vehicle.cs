@@ -59,7 +59,7 @@ namespace simexercise
                     t += dt; //increment time
 
                     // simulation runs MUCH faster than real time, 
-                    // vehicle sends location udpates
+                    // vehicle sends location updates
                     // once per frequency*seconds
                     if (t % frequency == 0)
                     {
