@@ -70,7 +70,7 @@ namespace simexercise
                         // try and stay within a minute ahead of real time
                         if (eventQueue.Count > 100)
                             await Task.Delay(1000);                     
-                        eventQueue.Enqueue(new IoTState(s));
+                        eventQueue.Enqueue(new IoTState(s,t));
                     }
                     s.adjustSpeed(nextStop);
                 }

@@ -8,13 +8,15 @@ namespace simexercise
         public double Longitude { get; set; }
         public decimal Speed { get; set; }
         public decimal Limit { get; internal set; }
+        public decimal T {get; set;}
 
-        public IoTState(VehicleState s)
+        public IoTState(VehicleState s, decimal t )
         {
             Latitude = s.location.Latitude;
             Longitude = s.location.Longitude;
             Speed = s.Speed;
             Limit = s.maxSpeed;
+            T = t;
         }
     }
 

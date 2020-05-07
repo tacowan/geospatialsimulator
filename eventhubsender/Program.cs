@@ -24,7 +24,7 @@ namespace simexercise
             assertEnvVariable();
 
             var waypoints = parseWaypoints("waypoints");
-            var s_deviceClient = getDeviceClient();
+            //var s_deviceClient = getDeviceClient();
             Program p = new Program(Config);
 
             for(int i=1; i<waypoints.Length; i++) {
@@ -32,7 +32,7 @@ namespace simexercise
                 var lon1 = waypoints[i-1,1];
                 var lat2 = waypoints[i,0];
                 var lon2 = waypoints[i,1];
-                p.begin(s_deviceClient, lat1, lon1, lat2, lon2).Wait();
+                p.begin(null, lat1, lon1, lat2, lon2).Wait();
             }
             return 0;
         }
@@ -74,23 +74,23 @@ namespace simexercise
             producer.Parse(json);
 
             Task t1 = producer.GenerateMetersAsync();
-            var v = new Vehicle(producer);
+            var v = new Vehicle(producer, false);
 
-            Task t2 = v.StartTrip(async (IoTState v) =>
+            Task t2 = v.StartTrip( (IoTState v) =>
             {
                 var telemetryDataPoint = new
                 {
                     Location = new { lon = v.Longitude, lat = v.Latitude },
                     Speed = v.Speed * 3.6M
                 };
-                System.Console.WriteLine($"{},{},{}"); 
- /*              var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
+                System.Console.WriteLine($"telemetry,{v.Latitude},{v.Longitude},{v.Speed * 3.6M}"); 
+ /*             var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
                 using EventDataBatch eventBatch = await client.CreateBatchAsync();
                 var eventnew = new EventData(Encoding.UTF8.GetBytes(messageString));
                 eventnew.Properties["deviceid"] = "foo";
                 eventBatch.TryAdd(eventnew);
  */
-            }, 0);
+            }, 5);
 
             t2.Wait();
         }
