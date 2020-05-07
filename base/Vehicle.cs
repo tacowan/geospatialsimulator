@@ -15,10 +15,13 @@ namespace simexercise
         decimal stoppedUntil = 0.0M;
         VehicleState s;
         AtlasRoute _route;
+        bool _realtime;
 
-        public Vehicle(AtlasRoute route)
+        public Vehicle(AtlasRoute route, bool realtime = true)
         {
             _route = route;
+            _realtime = realtime;
+
             eventQueue = new Queue<IoTState>();
             
             s = new VehicleState()
@@ -29,6 +32,7 @@ namespace simexercise
                 Speed = 0
             };
         }
+
 
         public async Task StartTrip(Action<IoTState> a, int frequency = 2)
         {
@@ -82,14 +86,13 @@ namespace simexercise
                 while (true)
                 {
                     //await Task.Delay(frequency * 1000);
-                    await Task.Delay(frequency * 1000);
+                    if (_realtime) await Task.Delay(frequency * 1000);
                     if (eventQueue.Count < 1)
                         continue;
                     if (eventQueue.Peek().Latitude < 0)
                         break;
                     a.Invoke(eventQueue.Dequeue());
                 }
-                Console.WriteLine("Realtime simulation complete");
             });
 
         }

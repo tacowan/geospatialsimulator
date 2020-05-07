@@ -83,13 +83,14 @@ namespace simexercise
                     Location = new { lon = v.Longitude, lat = v.Latitude },
                     Speed = v.Speed * 3.6M
                 };
-                var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
+                System.Console.WriteLine($"{},{},{}"); 
+ /*              var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
                 using EventDataBatch eventBatch = await client.CreateBatchAsync();
                 var eventnew = new EventData(Encoding.UTF8.GetBytes(messageString));
                 eventnew.Properties["deviceid"] = "foo";
                 eventBatch.TryAdd(eventnew);
-
-            }, 5);
+ */
+            }, 0);
 
             t2.Wait();
         }
