@@ -71,7 +71,6 @@ namespace simexercise
 
             Task t1 = producer.GenerateMetersAsync();
             var v = new Vehicle(producer, false);
-
             System.Console.WriteLine("PartitionKey,RowKey,Latitude,Longitude,SpeedKPH");  
             Task t2 = v.StartTrip( (IoTState v) =>
             {
@@ -83,7 +82,6 @@ namespace simexercise
                 System.Console.WriteLine($"telemetry,{v.T:0000000},{v.Latitude},{v.Longitude},{v.Speed * 3.6M}");
 
           }, 5);
-
             t2.Wait();
         }
 
