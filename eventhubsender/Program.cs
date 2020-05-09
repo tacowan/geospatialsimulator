@@ -1,12 +1,8 @@
-﻿using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using static simexercise.DeviceRegistrationHelper;
+﻿using System.Threading.Tasks;
 using static simexercise.AppConfig;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Azure.Messaging.EventHubs.Producer;
-using Azure.Messaging.EventHubs;
 
 namespace simexercise
 {
@@ -27,7 +23,7 @@ namespace simexercise
             //var s_deviceClient = getDeviceClient();
             Program p = new Program(Config);
 
-            for(int i=1; i<waypoints.Length; i++) {
+            for(int i=1; i<waypoints.Length/2; i++) {
                 var lat1 = waypoints[i-1,0];
                 var lon1 = waypoints[i-1,1];
                 var lat2 = waypoints[i,0];
@@ -52,7 +48,7 @@ namespace simexercise
 
             for (int i=0; i<x.Length; i++)
             {            
-                var y = x[i].Split(',');    
+                var y = x[i].Split(',');
                 var lat1 = double.Parse(y[0]);
                 var lon1 = double.Parse(y[1]);
                 waypoints[i,0] = lat1;
@@ -83,14 +79,10 @@ namespace simexercise
                     Location = new { lon = v.Longitude, lat = v.Latitude },
                     Speed = v.Speed * 3.6M
                 };
-                System.Console.WriteLine($"telemetry,{v.Latitude},{v.Longitude},{v.Speed * 3.6M}"); 
- /*             var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
-                using EventDataBatch eventBatch = await client.CreateBatchAsync();
-                var eventnew = new EventData(Encoding.UTF8.GetBytes(messageString));
-                eventnew.Properties["deviceid"] = "foo";
-                eventBatch.TryAdd(eventnew);
- */
-            }, 5);
+
+                System.Console.WriteLine($"telemetry,{v.T:0000000},{v.Latitude},{v.Longitude},{v.Speed * 3.6M}");
+
+          }, 5);
 
             t2.Wait();
         }

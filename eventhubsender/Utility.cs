@@ -15,7 +15,7 @@ namespace simexercise
         public static void assertEnvVariable()
         {
            
-            string[] env = {"MAPSKEY","EVENTHUBNAME","EVENTHUBCONNSTR"};
+            string[] env = {"MAPSKEY"};
             foreach (var v in env ) {
                 var test = Config[v];
                 if ( test == null ) {
@@ -26,7 +26,8 @@ namespace simexercise
         }
     }
 
-    public class DeviceRegistrationHelper
+
+ /*    public class DeviceRegistrationHelper
     {
         private const string provisioningHost = "global.azure-devices-provisioning.net";
 
@@ -36,5 +37,5 @@ namespace simexercise
             var connectionString = Config["EVENTHUBCONNSTR"];
             return new EventHubProducerClient(connectionString, eventhub);
         }
-    }
+    } */
 }
