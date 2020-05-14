@@ -25,17 +25,4 @@ namespace simexercise
             }
         }
     }
-
-
- /*    public class DeviceRegistrationHelper
-    {
-        private const string provisioningHost = "global.azure-devices-provisioning.net";
-
-        public static EventHubProducerClient getDeviceClient()
-        {           
-            var eventhub = Config["EVENTHUBNAME"];
-            var connectionString = Config["EVENTHUBCONNSTR"];
-            return new EventHubProducerClient(connectionString, eventhub);
-        }
-    } */
 }

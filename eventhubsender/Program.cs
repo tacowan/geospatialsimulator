@@ -34,19 +34,10 @@ namespace simexercise
             return 0;
         }
 
-        private static void parseCoordinate(string var, out double lat1, out double lon1)
-        {
-            var x = AppConfig.Config[var].Split(',');
-            lat1 = double.Parse(x[0]);
-            lon1 = double.Parse(x[1]);
-        }
-
         private static double[,] parseWaypoints(string var)
         {
-            var x = AppConfig.Config[var].Split(':');
-
+            var x = Config[var].Split(':');
             var waypoints = new double[x.Length, 2];
-
             for (int i=0; i<x.Length; i++)
             {            
                 var y = x[i].Split(',');
@@ -73,6 +64,7 @@ namespace simexercise
             Task t1 = producer.GenerateMetersAsync();
             var v = new Vehicle(producer, false);
 
+            var deviceId = Config["DEVICEID"];
             Task t2 = v.StartTrip( (IoTState v) =>
             {
                 var telemetryDataPoint = new
@@ -80,7 +72,7 @@ namespace simexercise
                     Location = new { lon = v.Longitude, lat = v.Latitude },
                     Speed = v.Speed * 3.6M
                 };
-                System.Console.WriteLine($"telemetry,{rowkey++},{v.T},{v.Latitude},{v.Longitude},{v.Speed * 3.6M}");
+                System.Console.WriteLine($"{deviceId},{rowkey++},{v.T},{v.Latitude},{v.Longitude},{v.Speed * 3.6M}");
             }, 5);
             t2.Wait();
         }
