@@ -78,7 +78,6 @@ namespace simexercise
                 eventQueue.Enqueue(
                     new IoTState() { Latitude = -1 }
                 );
-                Console.WriteLine("Virtual simulation completed, duration: {0}", TimeSpan.FromSeconds(Decimal.ToDouble(t)));
             });
 
             await Task.Run(async () =>

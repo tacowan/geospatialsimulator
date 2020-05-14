@@ -9,6 +9,7 @@ namespace simexercise
     class Program
     {
         IConfiguration config;
+        int rowkey=0;
         static int Main(string[] args)
         {
             var builder = new ConfigurationBuilder()
@@ -22,13 +23,13 @@ namespace simexercise
             var waypoints = parseWaypoints("waypoints");
             //var s_deviceClient = getDeviceClient();
             Program p = new Program(Config);
-
+            System.Console.WriteLine("PartitionKey,RowKey,t,Latitude,Longitude,SpeedKPH");
             for(int i=1; i<waypoints.Length/2; i++) {
                 var lat1 = waypoints[i-1,0];
                 var lon1 = waypoints[i-1,1];
                 var lat2 = waypoints[i,0];
                 var lon2 = waypoints[i,1];
-                p.begin(null, lat1, lon1, lat2, lon2).Wait();
+                p.begin(lat1, lon1, lat2, lon2).Wait();
             }
             return 0;
         }
@@ -62,7 +63,7 @@ namespace simexercise
             config = configuration;
         }
 
-        async Task begin(EventHubProducerClient client, double lat1, double lon1, double lat2, double lon2)
+        async Task begin(double lat1, double lon1, double lat2, double lon2)
         {
 
             var producer = new AtlasRoute(config);
@@ -71,8 +72,7 @@ namespace simexercise
 
             Task t1 = producer.GenerateMetersAsync();
             var v = new Vehicle(producer, false);
-            int i = 0;
-            System.Console.WriteLine("PartitionKey,RowKey,t,Latitude,Longitude,SpeedKPH");  
+
             Task t2 = v.StartTrip( (IoTState v) =>
             {
                 var telemetryDataPoint = new
@@ -80,8 +80,8 @@ namespace simexercise
                     Location = new { lon = v.Longitude, lat = v.Latitude },
                     Speed = v.Speed * 3.6M
                 };
-                System.Console.WriteLine($"telemetry,{i++},{v.T},{v.Latitude},{v.Longitude},{v.Speed * 3.6M}");
-          }, 5);
+                System.Console.WriteLine($"telemetry,{rowkey++},{v.T},{v.Latitude},{v.Longitude},{v.Speed * 3.6M}");
+            }, 5);
             t2.Wait();
         }
     }
