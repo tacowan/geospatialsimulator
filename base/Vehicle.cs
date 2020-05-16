@@ -11,7 +11,6 @@ namespace simexercise
 
         private Coordinate nextStop = new Coordinate();
         Queue<IoTState> eventQueue;
-        //BlockingCollection<RouteMarker> route;
         decimal stoppedUntil = 0.0M;
         VehicleState s;
         AtlasRoute _route;
