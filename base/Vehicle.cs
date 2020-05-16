@@ -26,7 +26,7 @@ namespace simexercise
             s = new VehicleState()
             {
                 maxSpeed = 10,
-                acclerationRate = 2,
+                accelerationRate = 2,
                 acceleration = 0,
                 Speed = 0
             };
@@ -83,7 +83,6 @@ namespace simexercise
             {
                 while (true)
                 {
-                    //await Task.Delay(frequency * 1000);
                     if (_realtime) await Task.Delay(frequency * 1000);
                     if (eventQueue.Count < 1)
                         continue;

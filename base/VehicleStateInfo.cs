@@ -23,14 +23,14 @@ namespace simexercise
     public class VehicleState
     {
         public decimal acceleration { get; set; }
-        public decimal acclerationRate { get; set; }
+        public decimal accelerationRate { get; set; }
         public decimal Speed { get; set; }
         public decimal maxSpeed { get; internal set; }
         public Coordinate location { get; set; }
 
         public decimal getStoppingDistance()
         {
-            return (Speed / acclerationRate) * (Speed / 2);
+            return (Speed / accelerationRate) * (Speed / 2);
         }
 
         internal void updateSpeed(decimal dt)
@@ -55,15 +55,15 @@ namespace simexercise
             if (getStoppingDistance() >= Math.Floor(stopSignDistance))
             {
                 //ignore all else and start slowing down
-                acceleration = -acclerationRate;
+                acceleration = -accelerationRate;
             }
             else if (Speed < maxSpeed) //accelerate
             {
-                acceleration = acclerationRate;
+                acceleration = accelerationRate;
             }
             else if (Speed > maxSpeed) // declerate
             {
-                acceleration = -acclerationRate;
+                acceleration = -accelerationRate;
             }
 
         }
