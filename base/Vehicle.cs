@@ -100,7 +100,7 @@ namespace simexercise
         {
             int i = _route.getSpeed(coord.Latitude,coord.Longitude).GetAwaiter().GetResult();
             //convert kph to meters per second
-            if ( i == -1 )
+            if ( i <= 0 )
                 i = 10;
             var result = i*0.27777778;
             s.maxSpeed = (decimal)result;
