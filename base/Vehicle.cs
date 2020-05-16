@@ -129,7 +129,5 @@ namespace simexercise
             }
             return false;
         }
-
-
     }
 }
