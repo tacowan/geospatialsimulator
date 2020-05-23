@@ -22,5 +22,5 @@ WORKDIR /app
 COPY --from=build-env /app/out .
 
 # Example: 
-# docker run -it -e AZSIMULATOR_MAPSKEY -e AZSIMULATOR_DEVICEID tacowan/simulator:latest
+# docker run -it -e AZSIMULATOR_MAPSKEY -e AZSIMULATOR_DEVICEID -e AZSIMULATOR_waypoints tacowan/simulator:latest
 ENTRYPOINT ["dotnet", "simexercise.dll"]
