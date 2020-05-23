@@ -14,16 +14,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - name: Publish NuGet
+      uses: brandedoutcast/publish-nuget@v2.5.2
       with:
-        dotnet-version: 3.1.101
-    - name: Install dependencies
-      working-directory: base
-      run: dotnet restore
-    - name: Build
-      working-directory: base
-      run: dotnet build --configuration Release --no-restore
-    - name: Test
-      working-directory: base
-      run: dotnet test --no-restore --verbosity normal
+        # Filepath of the project to be packaged, relative to root of repository
+        PROJECT_FILE_PATH: base
+        # API key to authenticate with NuGet server
+        NUGET_KEY: oy2nqy3rhb5m4rn5tesqoobtrn3dgzku7jgkovlbtu4fea
