@@ -8,20 +8,22 @@ on:
 
 jobs:
   build:
-
+    
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-      with:
-        path: base
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
     - name: Install dependencies
+      working-directory: base
       run: dotnet restore
     - name: Build
+      working-directory: base
       run: dotnet build --configuration Release --no-restore
     - name: Test
+      working-directory: base
       run: dotnet test --no-restore --verbosity normal
